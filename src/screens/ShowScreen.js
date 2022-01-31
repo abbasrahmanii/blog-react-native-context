@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useLayoutEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
@@ -8,19 +8,26 @@ const ShowScreen = () => {
   const {
     params: { id },
   } = useRoute();
-  const { navigate } = useNavigation();
+  const navigation = useNavigation();
   const { state, dispatch } = useContext(BlogContext);
   const blogById = state.find((blog) => blog.id === id);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Edit", { id: blogById.id })}
+        >
+          <Feather name="edit" color="#4781ff" size={30} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
-      <View style={styles.blog}>
-        <Text style={styles.title}>{blogById.title}</Text>
-        <Text style={styles.content}>{blogById.content}</Text>
-      </View>
-      <TouchableOpacity onPress={() => navigate("Edit", { id: blogById.id })}>
-        <Feather name="edit" style={styles.icon} />
-      </TouchableOpacity>
+      <Text style={styles.title}>{blogById.title}</Text>
+      <Text style={styles.content}>{blogById.content}</Text>
     </View>
   );
 };
@@ -32,10 +39,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 25,
     paddingHorizontal: 5,
-    flexDirection: "row",
-    justifyContent: "space-between",
   },
-  blog: {},
   title: {
     fontSize: 22,
     fontWeight: "bold",
@@ -44,9 +48,6 @@ const styles = StyleSheet.create({
   },
   content: {
     fontSize: 16,
-  },
-  icon: {
-    fontSize: 35,
   },
 });
 

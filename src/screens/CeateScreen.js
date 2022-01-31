@@ -5,11 +5,9 @@ import BlogContext from "../context/BlogContext";
 
 const CreateScreen = () => {
   const { navigate } = useNavigation();
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-
-  const { state, dispatch } = useContext(BlogContext);
+  const { dispatch } = useContext(BlogContext);
 
   const saveBlogPost = () => {
     dispatch({

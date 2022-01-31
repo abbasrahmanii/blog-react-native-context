@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React, { useContext, useLayoutEffect } from "react";
 import {
-  Button,
   FlatList,
   StyleSheet,
   Text,
@@ -12,19 +11,29 @@ import { useNavigation } from "@react-navigation/native";
 import BlogContext from "../context/BlogContext";
 
 const IndexScreen = () => {
-  const { navigate } = useNavigation();
-
+  const navigation = useNavigation();
   const { state, dispatch } = useContext(BlogContext);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate("Create")}>
+          <Feather name="plus" size={30} color="#4781ff" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <View>
-      <Button title="Add Post" onPress={() => navigate("Create")} />
       {state ? (
         <FlatList
           keyExtractor={(state) => state.id}
           data={state}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigate("Show", { id: item.id })}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Show", { id: item.id })}
+            >
               <View style={styles.row}>
                 <Text style={styles.title}>{item.title}</Text>
                 <TouchableOpacity
